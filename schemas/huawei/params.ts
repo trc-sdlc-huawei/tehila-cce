@@ -27,7 +27,7 @@ export type HuaweiListNamespacesParams = z.infer<typeof HuaweiListNamespacesPara
 export const HuaweiGetNamespaceByNameParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
-  name: z.string().describe('Namespace name')
+  name: z.string().describe('name')
 });
 export type HuaweiGetNamespaceByNameParams = z.infer<typeof HuaweiGetNamespaceByNameParamsSchema>;
 
@@ -35,7 +35,7 @@ export type HuaweiGetNamespaceByNameParams = z.infer<typeof HuaweiGetNamespaceBy
 export const HuaweiDeleteNamespaceParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
-  name: z.string().describe('Namespace name')
+  name: z.string().describe('name')
 });
 export type HuaweiDeleteNamespaceParams = z.infer<typeof HuaweiDeleteNamespaceParamsSchema>;
 
@@ -90,7 +90,7 @@ export type HuaweiReadPodParams = z.infer<typeof HuaweiReadPodParamsSchema>;
 export const HuaweiCreateNamespaceParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
-  name: z.string().describe('Namespace name'),
+  name: z.string().describe('name'),
 
 });
 export type HuaweiCreateNamespaceParams = z.infer<typeof HuaweiCreateNamespaceParamsSchema>;

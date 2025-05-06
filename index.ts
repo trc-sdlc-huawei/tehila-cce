@@ -161,7 +161,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
       case "get_namespace_by_name": {
         const args = HuaweiGetNamespaceByNameParamsSchema.parse(request.params.arguments);
-        const ns = await HuaweiGetNamespaceByName(args.region, args.cluster_id, args.namespace);
+        const ns = await HuaweiGetNamespaceByName(args.region, args.cluster_id, args.name);
         return { content: [{ type: "text", text: JSON.stringify(ns, null, 2) }] };
       }
       case "create_namespace": {

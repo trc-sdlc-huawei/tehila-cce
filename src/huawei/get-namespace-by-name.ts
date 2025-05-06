@@ -5,14 +5,14 @@ import { HuaweiNamespaceSchema, type HuaweiNamespace } from '../../schemas/huawe
 export async function HuaweiGetNamespaceByName(
   region: string,
   cluster_id: string,
-  namespace: string
+  name: string
 ): Promise<HuaweiNamespace> {
-  logInfo(`HuaweiGetNamespaceByName called with region=${region}, cluster_id=${cluster_id}, namespace=${namespace}`);
+  logInfo(`HuaweiGetNamespaceByName called with region=${region}, cluster_id=${cluster_id}, name=${name}`);
   if (!HUAWEI_CCE_AUTH_TOKEN) {
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
-  const url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces/${namespace}`;
+  const url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces/${name}`;
   const headers: Record<string, string> = {
     'x-auth-token': HUAWEI_CCE_AUTH_TOKEN,
     'Content-Type': 'application/json',
