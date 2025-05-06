@@ -19,7 +19,7 @@ import {
   createMergeRequest, createOrUpdateFile, createRepository, getFileContents, searchProjects,
   forkProject, createCommit
 } from './src/gitlab/index.js';
-import { HuaweiListClusters } from './src/huawei/index.js';
+import { HuaweiListClusters , HuaweiGetClusterById} from './src/huawei/index.js';
 import { HUAWEI_CCE_AUTH_TOKEN } from './src/huawei/constants.js';
 import {
   CreateOrUpdateFileSchema,
@@ -31,7 +31,8 @@ import {
   CreateMergeRequestSchema,
   ForkRepositorySchema,
   CreateBranchSchema,
-  HuaweiListClustersParamsSchema
+  HuaweiListClustersParamsSchema,
+  HuaweiGetClusterByIdParamsSchema
 } from './schemas/index.js';
 
 const server = new Server({
@@ -112,6 +113,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "list_clusters",
         description: "List all clusters in a Huawei CCE project",
         inputSchema: zodToJsonSchema(HuaweiListClustersParamsSchema)
+      },
+      {
+        name: "get_cluster_by_id",
+        description: "Get a specific cluster by ID",
+        inputSchema: zodToJsonSchema(HuaweiGetClusterByIdParamsSchema)
       },
     ]
   };
@@ -207,6 +213,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const args = HuaweiListClustersParamsSchema.parse(request.params.arguments);
         const clusters = await HuaweiListClusters(args.region, args.project_id);
         return { content: [{ type: "text", text: JSON.stringify(clusters, null, 2) }] };
+      }
+      case "get_cluster_by_id": {
+        const args = HuaweiGetClusterByIdParamsSchema.parse(request.params.arguments);
+        const cluster = await HuaweiGetClusterById(args.region, args.project_id, args.cluster_id);
+        return { content: [{ type: "text", text: JSON.stringify(cluster, null, 2) }] };
       }
 
       default:
