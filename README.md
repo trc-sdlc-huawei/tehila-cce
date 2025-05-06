@@ -9,12 +9,18 @@
 
 ## Kubernetes-native APIs
 
-- **list_namespaces**: List all namespaces within a Huawei CCE cluster.
-- **create_namespace**: Create a new namespace in a Huawei CCE cluster.
-- **delete_namespace**: Delete an existing namespace in a Huawei CCE cluster.
-- **list_pods**: List all pods in a Huawei CCE cluster or namespace.
-- **create_pod**: Create a new pod in a Huawei CCE cluster and namespace.
-- **read_pod**: Get information about a specific pod in a Huawei CCE cluster.
+- **Namespace APIs**:
+  - **list_namespaces**: List all namespaces.
+  - **get_namespace_by_name**: Retrieve details of a specific namespace by its name.
+  - **create_namespace**: Create a new namespace.
+  - **delete_namespace**: Delete an existing namespace.
+- **Pod APIs**:
+  - **list_pods**: List all pods.
+  - **list_pods_by_namespace**: List all pods in a namespace.
+  - **get_pod_by_name_and_namespace**: Retrieve details of a specific pod by its name and namespace.
+  - **create_pod**: Create a new pod and namespace.
+  - **read_pod**: Get information about a specific pod.
+  - **delete_pod**: Delete an existing pod.
 
 
 
