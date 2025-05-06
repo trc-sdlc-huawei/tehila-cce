@@ -21,6 +21,8 @@ export const GitLabDirectoryContentSchema = z.object({
   web_url: z.string()
 });
 
+
+// union of 2 schemas
 export const GitLabContentSchema = z.union([
   GitLabFileContentSchema,
   z.array(GitLabDirectoryContentSchema)

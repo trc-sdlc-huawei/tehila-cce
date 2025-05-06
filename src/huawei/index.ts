@@ -7,3 +7,4 @@ export * from './create-namespace.js';
 export * from './list-pods.js';
 export * from './create-pod.js';
 export { HuaweiReadPod } from './read-pod.js';
+export { HuaweiGetNamespaceByName } from './get-namespace-by-name.js';

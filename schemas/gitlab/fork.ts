@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { GitLabRepositorySchema } from './repository.js';
 
+
+// nested objects in schema
 export const GitLabForkParentSchema = z.object({
   name: z.string(),
   path_with_namespace: z.string(),
@@ -12,6 +14,7 @@ export const GitLabForkParentSchema = z.object({
   web_url: z.string()
 });
 
+// extend of schema
 export const GitLabForkSchema = GitLabRepositorySchema.extend({
   forked_from_project: GitLabForkParentSchema
 });

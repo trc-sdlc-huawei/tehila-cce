@@ -33,6 +33,8 @@ import {
 } from '../../schemas/index.js';
 
 
+// each function gets the params, some are optional
+// each returns a primse or specific type
 export async function forkProject(
     projectId: string,
     namespace?: string
@@ -52,6 +54,7 @@ export async function forkProject(
         throw new Error(`GitLab API error: ${response.statusText}`);
     }
 
+    // parse the response
     return GitLabForkSchema.parse(await response.json());
 }
 
@@ -67,6 +70,7 @@ export async function createBranch(
                 "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
                 "Content-Type": "application/json"
             },
+            // for body, use stringification
             body: JSON.stringify({
                 branch: options.name,
                 ref: options.ref

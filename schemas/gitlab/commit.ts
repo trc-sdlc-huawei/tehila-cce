@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// schema from z.object
 export const GitLabCommitSchema = z.object({
   id: z.string(),
   short_id: z.string(),
@@ -14,4 +15,5 @@ export const GitLabCommitSchema = z.object({
   parent_ids: z.array(z.string())
 });
 
+// type from z.infer
 export type GitLabCommit = z.infer<typeof GitLabCommitSchema>;

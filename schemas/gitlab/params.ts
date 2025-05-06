@@ -4,6 +4,7 @@ export const ProjectParamsSchema = z.object({
   project_id: z.string().describe('Project ID or URL-encoded path')
 });
 
+// schemas with describe
 export const CreateOrUpdateFileSchema = ProjectParamsSchema.extend({
   file_path: z.string().describe('Path where to create/update the file'),
   content: z.string().describe('Content of the file'),
@@ -52,6 +53,7 @@ export const CreateMergeRequestSchema = ProjectParamsSchema.extend({
   description: z.string().optional().describe('Merge request description'),
   source_branch: z.string().describe('Branch containing changes'),
   target_branch: z.string().describe('Branch to merge into'),
+  // an optional boolean field 
   draft: z.boolean().optional().describe('Create as draft merge request'),
   allow_collaboration: z.boolean().optional().describe('Allow commits from upstream members')
 });

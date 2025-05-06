@@ -1,7 +1,6 @@
 import { HUAWEI_CCE_AUTH_TOKEN } from './constants.js';
 import { logInfo, logError, logHttpRequest, logHttpResponse } from '../../utils/logs.js';
-// If you have a schema for pod, import it here. Otherwise, use 'any' for now.
-// import { HuaweiPodSchema, HuaweiPod } from '../../schemas/huawei/index.js';
+import { HuaweiPodSchema, type HuaweiPod } from '../../schemas/huawei/index.js';
 
 export async function HuaweiReadPod(
   region: string,
@@ -9,7 +8,7 @@ export async function HuaweiReadPod(
   namespace: string,
   pod_name: string,
   opts: { pretty?: string } = {}
-): Promise<any> {
+): Promise<HuaweiPod> {
   logInfo(`HuaweiReadPod called with region=${region}, cluster_id=${cluster_id}, namespace=${namespace}, pod_name=${pod_name}, opts=${JSON.stringify(opts)}`);
   if (!HUAWEI_CCE_AUTH_TOKEN) {
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
@@ -34,8 +33,7 @@ export async function HuaweiReadPod(
       throw new Error(`Huawei CCE API error: ${response.statusText}`);
     }
     logInfo('HuaweiReadPod succeeded');
-    // return HuaweiPodSchema.parse(respBody); // Use this if you have a schema
-    return respBody;
+    return HuaweiPodSchema.parse(respBody); // Use this if you have a schema
   } catch (error) {
     logError(`HuaweiReadPod error: ${error}`);
     throw error;

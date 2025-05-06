@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
+// optional in schema
 export const GitLabLabelSchema = z.object({
   id: z.number(),
   name: z.string(),
   color: z.string(),
-  description: z.string().optional()
+  description: z.string().optional() // this key might be missing in some responses
 });
 
 export const GitLabUserSchema = z.object({
@@ -24,6 +25,7 @@ export const GitLabMilestoneSchema = z.object({
   web_url: z.string()
 });
 
+// allow null, and nested objects in schema
 export const GitLabIssueSchema = z.object({
   id: z.number(),
   iid: z.number(),
@@ -37,6 +39,7 @@ export const GitLabIssueSchema = z.object({
   milestone: GitLabMilestoneSchema.nullable(),
   created_at: z.string(),
   updated_at: z.string(),
+  // the value of this key might be null in some responses
   closed_at: z.string().nullable(),
   web_url: z.string()
 });

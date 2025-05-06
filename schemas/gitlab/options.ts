@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const CreateRepositoryOptionsSchema = z.object({
     name: z.string(),
     description: z.string().optional(),
+    // enum in schema
     visibility: z.enum(['private', 'internal', 'public']).optional(), // Changed from private to match GitLab API
     initialize_with_readme: z.boolean().optional() // Changed from auto_init to match GitLab API
 });

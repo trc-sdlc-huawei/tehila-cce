@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// cluster
 export const HuaweiListClustersParamsSchema = z.object({
   region: z.string().describe('Region to list clusters in'),
   project_id: z.string().describe('Project ID to list clusters for')
@@ -15,11 +16,22 @@ export const HuaweiGetClusterByIdParamsSchema = z.object({
 
 export type HuaweiGetClusterByIdParams = z.infer<typeof HuaweiGetClusterByIdParamsSchema>;
 
+
+// namespace
 export const HuaweiListNamespacesParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
 });
 export type HuaweiListNamespacesParams = z.infer<typeof HuaweiListNamespacesParamsSchema>;
+
+export const HuaweiGetNamespaceByNameParamsSchema = z.object({
+  region: z.string().describe('Region'),
+  cluster_id: z.string().describe('Cluster ID'),
+  namespace: z.string().describe('Namespace name'),
+  pretty: z.string().optional().describe('Pretty print output'),
+});
+export type HuaweiGetNamespaceByNameParams = z.infer<typeof HuaweiGetNamespaceByNameParamsSchema>;
+
 
 export const HuaweiDeleteNamespaceParamsSchema = z.object({
   region: z.string().describe('Region'),
@@ -33,6 +45,8 @@ export const HuaweiDeleteNamespaceParamsSchema = z.object({
 });
 export type HuaweiDeleteNamespaceParams = z.infer<typeof HuaweiDeleteNamespaceParamsSchema>;
 
+
+// pod
 export const HuaweiListPodsParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
