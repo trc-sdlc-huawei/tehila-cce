@@ -10,18 +10,18 @@
 ## Kubernetes-native APIs
 
 - **Namespace APIs**:
-  - **list_namespaces**: List all namespaces.
-  - **get_namespace_by_name**: Retrieve details of a specific namespace by its name.
-  - **create_namespace**: Create a new namespace.
-  - **delete_namespace**: Delete an existing namespace.
+  - **GET list_namespaces**: List all namespaces.
+  - **GET get_namespace_by_name**: Retrieve details of a specific namespace by its name.
+  - **POST create_namespace**: Create a new namespace.
+  - **DELETE delete_namespace**: Delete an existing namespace.
 - **Pod APIs**:
-  - **list_pods**: List all pods.
-  - **list_pods_by_namespace**: List all pods in a namespace.
-  - **get_pod_by_name_and_namespace**: Retrieve details of a specific pod by its name and namespace.
-  - **create_pod**: Create a new pod and namespace.
-  - **read_pod**: Get information about a specific pod.
-  - **delete_pod**: Delete an existing pod.
-  - **delete_all_pods_in_namespace**: Delete all pods in a namespace.
+  - **GET list_pods**: List all pods.
+  - **GET list_pods_by_namespace**: List all pods in a namespace.
+  - **GET get_pod_by_name_and_namespace**: Retrieve details of a specific pod by its name and namespace.
+  - **POST create_pod**: Create a new pod and namespace.
+  - **GET read_pod**: Get information about a specific pod.
+  - **DELETE delete_pod**: Delete an existing pod.
+  - **DELETE delete_all_pods_in_namespace**: Delete all pods in a namespace.
 
 
 
