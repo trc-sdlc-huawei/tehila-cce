@@ -7,7 +7,7 @@
 - **get_cluster_by_id**: Retrieve details of a specific cluster by its ID.
 
 
-### Kubernetes-native APIs
+## Kubernetes-native APIs
 
 - **list_namespaces**: List all namespaces within a Huawei CCE cluster.
 - **create_namespace**: Create a new namespace in a Huawei CCE cluster.
