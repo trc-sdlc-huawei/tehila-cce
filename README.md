@@ -57,6 +57,7 @@ Example configuration for MCP server integration:
   }
 ```
 
-## License
+## example prompt
 
-This project is licensed under the MIT License.
+- list all my namespaces from huawei cloud cce
+

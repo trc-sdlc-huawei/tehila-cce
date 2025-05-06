@@ -27,7 +27,7 @@ export type HuaweiListNamespacesParams = z.infer<typeof HuaweiListNamespacesPara
 export const HuaweiGetNamespaceByNameParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
-  namespace: z.string().describe('Namespace name')
+  name: z.string().describe('Namespace name')
 });
 export type HuaweiGetNamespaceByNameParams = z.infer<typeof HuaweiGetNamespaceByNameParamsSchema>;
 
