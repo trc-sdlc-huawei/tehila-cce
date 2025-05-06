@@ -18,13 +18,19 @@ export async function HuaweiListPods(
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
-  const url = new URL(`https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/pods`);
-  Object.entries(opts).forEach(([key, value]) => {
-    if (value !== undefined) url.searchParams.append(key, String(value));
-  });
-  logHttpRequest('GET', url.toString(), { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
+  let url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/pods`;
+  const params: string[] = [];
+  if (opts.labelSelector) params.push(`labelSelector=${encodeURIComponent(opts.labelSelector)}`);
+  if (opts.fieldSelector) params.push(`fieldSelector=${encodeURIComponent(opts.fieldSelector)}`);
+  if (opts.limit !== undefined) params.push(`limit=${opts.limit}`);
+  if (opts.continue) params.push(`continue=${encodeURIComponent(opts.continue)}`);
+  if (opts.pretty) params.push(`pretty=${encodeURIComponent(opts.pretty)}`);
+  if (params.length > 0) {
+    url += `?${params.join('&')}`;
+  }
+  logHttpRequest('GET', url, { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
   try {
-    const response = await fetch(url.toString(), {
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         "x-auth-token": `${HUAWEI_CCE_AUTH_TOKEN}`

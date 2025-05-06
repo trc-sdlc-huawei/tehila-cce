@@ -21,10 +21,15 @@ export async function HuaweiCreatePod(
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
-  const url = new URL(`https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces/${namespace}/pods`);
-  Object.entries(opts).forEach(([key, value]) => {
-    if (value !== undefined) url.searchParams.append(key, String(value));
-  });
+  let url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces/${namespace}/pods`;
+  const params: string[] = [];
+  if (opts.dryRun) params.push(`dryRun=${encodeURIComponent(opts.dryRun)}`);
+  if (opts.fieldManager) params.push(`fieldManager=${encodeURIComponent(opts.fieldManager)}`);
+  if (opts.fieldValidation) params.push(`fieldValidation=${encodeURIComponent(opts.fieldValidation)}`);
+  if (opts.pretty) params.push(`pretty=${encodeURIComponent(opts.pretty)}`);
+  if (params.length > 0) {
+    url += `?${params.join('&')}`;
+  }
 
   const body = {
     kind: "Pod",

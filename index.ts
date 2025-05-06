@@ -12,7 +12,18 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 
 // src
 
-import { HuaweiListClusters, HuaweiGetClusterById, HuaweiListNamespaces, HuaweiDeleteNamespace, HuaweiCreateNamespace, HuaweiListPods, HuaweiCreatePod, HuaweiReadPod, HuaweiGetNamespaceByName } from './src/huawei/index.js';
+import {
+  HuaweiListClusters,
+  HuaweiGetClusterById,
+  HuaweiListNamespaces,
+  HuaweiDeleteNamespace,
+  HuaweiCreateNamespace,
+  HuaweiListPods,
+  HuaweiCreatePod,
+  HuaweiReadPod,
+  HuaweiGetNamespaceByName,
+  HuaweiDeletePod
+} from './src/huawei/index.js';
 import { HUAWEI_CCE_AUTH_TOKEN } from './src/huawei/constants.js';
 import {
   HuaweiListClustersParamsSchema,
@@ -24,6 +35,7 @@ import {
   HuaweiCreatePodParamsSchema,
   HuaweiReadPodParamsSchema,
   HuaweiGetNamespaceByNameParamsSchema,
+  HuaweiDeletePodParamsSchema,
 } from './schemas/index.js';
 
 const server = new Server({
@@ -51,6 +63,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "get_namespace_by_name",
         description: "Get a namespace in a Huawei CCE cluster by name",
         inputSchema: zodToJsonSchema(HuaweiGetNamespaceByNameParamsSchema)
+      },
+      {
+        name: "delete_pod",
+        description: "Delete a pod by name and namespace in a Huawei CCE cluster",
+        inputSchema: zodToJsonSchema(HuaweiDeletePodParamsSchema)
       },
       {
         name: "list_clusters",
@@ -105,9 +122,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     switch (request.params.name) {
+      case "delete_pod": {
+        const args = HuaweiDeletePodParamsSchema.parse(request.params.arguments);
+        const pod = await HuaweiDeletePod(args.region, args.cluster_id, args.namespace, args.pod_name);
+        return { content: [{ type: "text", text: JSON.stringify(pod, null, 2) }] };
+      }
       case "get_namespace_by_name": {
         const args = HuaweiGetNamespaceByNameParamsSchema.parse(request.params.arguments);
-        const ns = await HuaweiGetNamespaceByName(args.region, args.cluster_id, args.namespace, { pretty: args.pretty });
+        const ns = await HuaweiGetNamespaceByName(args.region, args.cluster_id, args.namespace);
         return { content: [{ type: "text", text: JSON.stringify(ns, null, 2) }] };
       }
       case "list_clusters": {

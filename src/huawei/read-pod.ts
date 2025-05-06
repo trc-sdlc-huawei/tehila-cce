@@ -14,13 +14,16 @@ export async function HuaweiReadPod(
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
-  const url = new URL(`https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces/${namespace}/pods/${pod_name}`);
+  let url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces/${namespace}/pods/${pod_name}`;
+  if (opts.pretty) {
+    url += `?pretty=${encodeURIComponent(opts.pretty)}`;
+  }
   Object.entries(opts).forEach(([key, value]) => {
-    if (value !== undefined) url.searchParams.append(key, String(value));
+    if (value !== undefined && key !== 'pretty') url += `&${key}=${String(value)}`;
   });
-  logHttpRequest('GET', url.toString(), { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
+  logHttpRequest('GET', url, { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
   try {
-    const response = await fetch(url.toString(), {
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         "x-auth-token": `${HUAWEI_CCE_AUTH_TOKEN}`

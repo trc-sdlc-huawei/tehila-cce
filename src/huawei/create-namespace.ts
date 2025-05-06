@@ -18,13 +18,17 @@ export async function HuaweiCreateNamespace(
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
-  const url = new URL(`https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces`);
+  let url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces`;
+  if (opts.pretty) {
+    url += `?pretty=${encodeURIComponent(opts.pretty)}`;
+  }
+  const urlObject = new URL(url);
   Object.entries(opts).forEach(([key, value]) => {
-    if (value !== undefined) url.searchParams.append(key, String(value));
+    if (value !== undefined && key !== 'pretty') urlObject.searchParams.append(key, String(value));
   });
-  logHttpRequest('POST', url.toString(), { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
+  logHttpRequest('POST', urlObject.toString(), { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
   try {
-    const response = await fetch(url.toString(), {
+    const response = await fetch(urlObject.toString(), {
       method: 'POST',
       headers: {
         "x-auth-token": `${HUAWEI_CCE_AUTH_TOKEN}`,

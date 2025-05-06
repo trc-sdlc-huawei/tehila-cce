@@ -11,7 +11,7 @@ export type HuaweiListClustersParams = z.infer<typeof HuaweiListClustersParamsSc
 export const HuaweiGetClusterByIdParamsSchema = z.object({
   region: z.string().describe('Region of the cluster'),
   project_id: z.string().describe('Project ID'),
-  cluster_id: z.string().describe('Cluster ID'),
+  cluster_id: z.string().describe('Cluster ID')
 });
 
 export type HuaweiGetClusterByIdParams = z.infer<typeof HuaweiGetClusterByIdParamsSchema>;
@@ -20,15 +20,14 @@ export type HuaweiGetClusterByIdParams = z.infer<typeof HuaweiGetClusterByIdPara
 // namespace
 export const HuaweiListNamespacesParamsSchema = z.object({
   region: z.string().describe('Region'),
-  cluster_id: z.string().describe('Cluster ID'),
+  cluster_id: z.string().describe('Cluster ID')
 });
 export type HuaweiListNamespacesParams = z.infer<typeof HuaweiListNamespacesParamsSchema>;
 
 export const HuaweiGetNamespaceByNameParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
-  namespace: z.string().describe('Namespace name'),
-  pretty: z.string().optional().describe('Pretty print output'),
+  namespace: z.string().describe('Namespace name')
 });
 export type HuaweiGetNamespaceByNameParams = z.infer<typeof HuaweiGetNamespaceByNameParamsSchema>;
 
@@ -36,14 +35,17 @@ export type HuaweiGetNamespaceByNameParams = z.infer<typeof HuaweiGetNamespaceBy
 export const HuaweiDeleteNamespaceParamsSchema = z.object({
   region: z.string().describe('Region'),
   cluster_id: z.string().describe('Cluster ID'),
-  name: z.string().describe('Namespace name'),
-  dryRun: z.string().optional(),
-  gracePeriodSeconds: z.number().optional(),
-  ignoreStoreReadErrorWithClusterBreakingPotential: z.boolean().optional(),
-  pretty: z.string().optional(),
-  propagationPolicy: z.string().optional(),
+  name: z.string().describe('Namespace name')
 });
 export type HuaweiDeleteNamespaceParams = z.infer<typeof HuaweiDeleteNamespaceParamsSchema>;
+
+export const HuaweiDeletePodParamsSchema = z.object({
+  region: z.string().describe('Region'),
+  cluster_id: z.string().describe('Cluster ID'),
+  namespace: z.string().describe('Namespace'),
+  pod_name: z.string().describe('Pod name'),
+});
+export type HuaweiDeletePodParams = z.infer<typeof HuaweiDeletePodParamsSchema>;
 
 
 // pod
