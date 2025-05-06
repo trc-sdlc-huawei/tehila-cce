@@ -1,0 +1,24 @@
+{
+    "mcpServers": { 
+      "gitlab": {
+        "command": "docker",
+        "args": [
+          "run",
+          "--rm",
+          "-i",
+          "-e",
+          "GITLAB_PERSONAL_ACCESS_TOKEN",
+          "-e",
+          "GITLAB_API_URL",
+          "-e",
+          "HUAWEI_CCE_AUTH_TOKEN",
+          "mcp/gitlab"
+        ],
+        "env": {
+          "GITLAB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN>",
+          "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>"
+        }
+      }
+    }
+  }
+  
