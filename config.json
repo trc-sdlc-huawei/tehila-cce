@@ -1,6 +1,6 @@
 {
     "mcpServers": { 
-      "gitlab": {
+      "try-cce": {
         "command": "docker",
         "args": [
           "run",

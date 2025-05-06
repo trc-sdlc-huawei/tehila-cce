@@ -34,7 +34,7 @@ Example configuration for MCP server integration:
 ```json
 {
     "mcpServers": { 
-      "gitlab": {
+      "try-cce": {
         "command": "docker",
         "args": [
           "run",
