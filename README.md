@@ -19,10 +19,7 @@
   - **GET list_pods_by_namespace**: List all pods in a namespace.
   - **GET get_pod_by_name_and_namespace**: Retrieve details of a specific pod by its name and namespace.
   - **POST create_pod**: Create a new pod and namespace.
-  - **GET read_pod**: Get information about a specific pod.
   - **DELETE delete_pod**: Delete an existing pod.
-  - **DELETE delete_all_pods_in_namespace**: Delete all pods in a namespace.
-
 
 
 

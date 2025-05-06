@@ -1,0 +1,50 @@
+import { HUAWEI_CCE_AUTH_TOKEN } from './constants.js';
+import { logInfo, logError, logHttpRequest, logHttpResponse } from '../../utils/logs.js';
+import { z } from 'zod';
+
+// Schema for a single pod (reuse existing if available)
+import { HuaweiPodSchema } from '../../schemas/huawei/entities/pod.js';
+
+// Schema for pod list response
+export const HuaweiPodListSchema = z.object({
+  kind: z.literal('PodList'),
+  apiVersion: z.string(),
+  metadata: z.any(),
+  items: z.array(HuaweiPodSchema),
+});
+export type HuaweiPodList = z.infer<typeof HuaweiPodListSchema>;
+
+export async function HuaweiListPodsByNamespace(
+  region: string,
+  cluster_id: string,
+  namespace: string
+): Promise<HuaweiPodList> {
+  logInfo(`HuaweiListPodsByNamespace called with region=${region}, cluster_id=${cluster_id}, namespace=${namespace}`);
+  if (!HUAWEI_CCE_AUTH_TOKEN) {
+    logError('HUAWEI_CCE_AUTH_TOKEN is missing');
+    throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
+  }
+  const url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces/${namespace}/pods`;
+  const headers: Record<string, string> = {
+    'x-auth-token': HUAWEI_CCE_AUTH_TOKEN,
+    'Content-Type': 'application/json',
+  };
+  logHttpRequest(url, 'GET', headers);
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: headers as Record<string, string>,
+    });
+    const respBody = await response.json();
+    logHttpResponse(response.status, undefined, respBody, undefined);
+    if (!response.ok) {
+      logError(`Huawei CCE API error: ${response.statusText}`);
+      throw new Error(`Huawei CCE API error: ${response.statusText}`);
+    }
+    logInfo('HuaweiListPodsByNamespace succeeded');
+    return HuaweiPodListSchema.parse(respBody);
+  } catch (error) {
+    logError(`HuaweiListPodsByNamespace error: ${error}`);
+    throw error;
+  }
+}

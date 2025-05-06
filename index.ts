@@ -22,7 +22,9 @@ import {
   HuaweiCreatePod,
   HuaweiReadPod,
   HuaweiGetNamespaceByName,
-  HuaweiDeletePod
+  HuaweiDeletePod,
+  HuaweiListPodsByNamespace,
+  HuaweiDeletePodsByNamespace
 } from './src/huawei/index.js';
 import { HUAWEI_CCE_AUTH_TOKEN } from './src/huawei/constants.js';
 import {
@@ -36,6 +38,8 @@ import {
   HuaweiReadPodParamsSchema,
   HuaweiGetNamespaceByNameParamsSchema,
   HuaweiDeletePodParamsSchema,
+  HuaweiListPodsByNamespaceParamsSchema,
+  HuaweiDeletePodsByNamespaceParamsSchema,
 } from './schemas/index.js';
 
 const server = new Server({
@@ -59,16 +63,7 @@ if (!HUAWEI_CCE_AUTH_TOKEN) {
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
-      {
-        name: "get_namespace_by_name",
-        description: "Get a namespace in a Huawei CCE cluster by name",
-        inputSchema: zodToJsonSchema(HuaweiGetNamespaceByNameParamsSchema)
-      },
-      {
-        name: "delete_pod",
-        description: "Delete a pod by name and namespace in a Huawei CCE cluster",
-        inputSchema: zodToJsonSchema(HuaweiDeletePodParamsSchema)
-      },
+      // Cluster tools
       {
         name: "list_clusters",
         description: "List all clusters in a Huawei CCE project",
@@ -79,15 +74,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         description: "Get a specific cluster by ID",
         inputSchema: zodToJsonSchema(HuaweiGetClusterByIdParamsSchema)
       },
+
+      // Namespace tools
       {
         name: "list_namespaces",
         description: "List all namespaces in a Huawei CCE cluster",
         inputSchema: zodToJsonSchema(HuaweiListNamespacesParamsSchema)
       },
       {
-        name: "delete_namespace",
-        description: "Delete a namespace in a Huawei CCE cluster",
-        inputSchema: zodToJsonSchema(HuaweiDeleteNamespaceParamsSchema)
+        name: "get_namespace_by_name",
+        description: "Get a namespace in a Huawei CCE cluster by name",
+        inputSchema: zodToJsonSchema(HuaweiGetNamespaceByNameParamsSchema)
       },
       {
         name: "create_namespace",
@@ -95,9 +92,26 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: zodToJsonSchema(HuaweiCreateNamespaceParamsSchema)
       },
       {
+        name: "delete_namespace",
+        description: "Delete a namespace in a Huawei CCE cluster",
+        inputSchema: zodToJsonSchema(HuaweiDeleteNamespaceParamsSchema)
+      },
+
+      // Pod tools
+      {
         name: "list_pods",
         description: "List all pods in a Huawei CCE cluster",
         inputSchema: zodToJsonSchema(HuaweiListPodsParamsSchema)
+      },
+      {
+        name: "list_pods_by_namespace",
+        description: "List all pods in a namespace in a Huawei CCE cluster",
+        inputSchema: zodToJsonSchema(HuaweiListPodsByNamespaceParamsSchema)
+      },
+      {
+        name: "get_pod_by_name_and_namespace",
+        description: "Get a specific pod in a Huawei CCE cluster by name and namespace",
+        inputSchema: zodToJsonSchema(HuaweiReadPodParamsSchema)
       },
       {
         name: "create_pod",
@@ -105,9 +119,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: zodToJsonSchema(HuaweiCreatePodParamsSchema)
       },
       {
-        name: "read_pod",
-        description: "Read a specific pod in a Huawei CCE cluster",
-        inputSchema: zodToJsonSchema(HuaweiReadPodParamsSchema)
+        name: "delete_pod",
+        description: "Delete a pod by name and namespace in a Huawei CCE cluster",
+        inputSchema: zodToJsonSchema(HuaweiDeletePodParamsSchema)
+      },
+      {
+        name: "delete_pods_by_namespace",
+        description: "Delete all pods in a namespace in a Huawei CCE cluster",
+        inputSchema: zodToJsonSchema(HuaweiDeletePodsByNamespaceParamsSchema)
       },
     ]
   };
@@ -122,16 +141,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     switch (request.params.name) {
-      case "delete_pod": {
-        const args = HuaweiDeletePodParamsSchema.parse(request.params.arguments);
-        const pod = await HuaweiDeletePod(args.region, args.cluster_id, args.namespace, args.pod_name);
-        return { content: [{ type: "text", text: JSON.stringify(pod, null, 2) }] };
-      }
-      case "get_namespace_by_name": {
-        const args = HuaweiGetNamespaceByNameParamsSchema.parse(request.params.arguments);
-        const ns = await HuaweiGetNamespaceByName(args.region, args.cluster_id, args.namespace);
-        return { content: [{ type: "text", text: JSON.stringify(ns, null, 2) }] };
-      }
+      // Cluster tools
       case "list_clusters": {
         const args = HuaweiListClustersParamsSchema.parse(request.params.arguments);
         const clusters = await HuaweiListClusters(args.region, args.project_id);
@@ -142,16 +152,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const cluster = await HuaweiGetClusterById(args.region, args.project_id, args.cluster_id);
         return { content: [{ type: "text", text: JSON.stringify(cluster, null, 2) }] };
       }
+
+      // Namespace tools
       case "list_namespaces": {
         const args = HuaweiListNamespacesParamsSchema.parse(request.params.arguments);
         const namespaces = await HuaweiListNamespaces(args.region, args.cluster_id);
         return { content: [{ type: "text", text: JSON.stringify(namespaces, null, 2) }] };
       }
-      case "delete_namespace": {
-        const args = HuaweiDeleteNamespaceParamsSchema.parse(request.params.arguments);
-        const { region, cluster_id, name, ...opts } = args;
-        const result = await HuaweiDeleteNamespace(region, cluster_id, name, opts);
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      case "get_namespace_by_name": {
+        const args = HuaweiGetNamespaceByNameParamsSchema.parse(request.params.arguments);
+        const ns = await HuaweiGetNamespaceByName(args.region, args.cluster_id, args.namespace);
+        return { content: [{ type: "text", text: JSON.stringify(ns, null, 2) }] };
       }
       case "create_namespace": {
         const args = HuaweiCreateNamespaceParamsSchema.parse(request.params.arguments);
@@ -170,7 +181,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const result = await HuaweiCreateNamespace(region, cluster_id, body, opts);
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
       }
+      case "delete_namespace": {
+        const args = HuaweiDeleteNamespaceParamsSchema.parse(request.params.arguments);
+        const { region, cluster_id, name, ...opts } = args;
+        const result = await HuaweiDeleteNamespace(region, cluster_id, name, opts);
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      }
 
+      // Pod tools
       case "list_pods": {
         const args = HuaweiListPodsParamsSchema.parse(request.params.arguments);
         const { region, cluster_id, ...opts } = args;
@@ -183,10 +201,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const result = await HuaweiCreatePod(region, cluster_id, namespace, pod_name, container_name, image, opts);
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
       }
-      case "read_pod": {
+      case "get_pod_by_name_and_namespace": {
         const args = HuaweiReadPodParamsSchema.parse(request.params.arguments);
         const pod = await HuaweiReadPod(args.region, args.cluster_id, args.namespace, args.pod_name, { pretty: args.pretty });
         return { content: [{ type: "text", text: JSON.stringify(pod, null, 2) }] };
+      }
+      case "list_pods_by_namespace": {
+        const args = HuaweiListPodsByNamespaceParamsSchema.parse(request.params.arguments);
+        const pods = await HuaweiListPodsByNamespace(args.region, args.cluster_id, args.namespace);
+        return { content: [{ type: "text", text: JSON.stringify(pods, null, 2) }] };
+      }
+      case "delete_pod": {
+        const args = HuaweiDeletePodParamsSchema.parse(request.params.arguments);
+        const pod = await HuaweiDeletePod(args.region, args.cluster_id, args.namespace, args.pod_name);
+        return { content: [{ type: "text", text: JSON.stringify(pod, null, 2) }] };
+      }
+      case "delete_pods_by_namespace": {
+        const args = HuaweiDeletePodsByNamespaceParamsSchema.parse(request.params.arguments);
+        const podList = await HuaweiDeletePodsByNamespace(args.region, args.cluster_id, args.namespace);
+        return { content: [{ type: "text", text: JSON.stringify(podList, null, 2) }] };
       }
       // error in case of unknown tool name
       default:

@@ -1,9 +1,6 @@
 import {
     type HuaweiListClustersResponse,
     HuaweiListClustersResponseSchema,
-    HuaweiGetClusterByIdParams,
-    HuaweiGetClusterByIdResponse,
-    HuaweiGetClusterByIdResponseSchema
 } from '../../schemas/huawei/index.js';
 import { HUAWEI_CCE_AUTH_TOKEN } from './constants.js';
 import { logInfo, logError, logHttpRequest, logHttpResponse } from '../../utils/logs.js';

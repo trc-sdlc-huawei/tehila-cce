@@ -10,6 +10,8 @@ export {
   HuaweiReadPodParamsSchema,
   HuaweiGetNamespaceByNameParamsSchema,
   HuaweiDeletePodParamsSchema,
+  HuaweiListPodsByNamespaceParamsSchema,
+  HuaweiDeletePodsByNamespaceParamsSchema,
 } from './huawei/params.js';
 export type { HuaweiGetNamespaceByNameParams } from './huawei/params.js';
 export { HuaweiGetNamespaceByName } from '../src/huawei/get-namespace-by-name.js';

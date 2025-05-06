@@ -1,4 +1,4 @@
-export * from './impl.js';
+export * from './list-clusters.js';
 export * from './constants.js';
 export * from './get-cluster-by-id.js';
 export * from './list-namespaces.js';
@@ -6,6 +6,8 @@ export * from './delete-namespace.js';
 export * from './create-namespace.js';
 export * from './list-pods.js';
 export * from './create-pod.js';
-export { HuaweiReadPod } from './read-pod.js';
+export { HuaweiReadPod } from './get-pod-by-name-and-namespace.js';
 export { HuaweiGetNamespaceByName } from './get-namespace-by-name.js';
 export { HuaweiDeletePod } from './delete-pod.js';
+export { HuaweiListPodsByNamespace } from './list-pods-by-namespace.js';
+export { HuaweiDeletePodsByNamespace } from './delete-pods-by-namespace.js';
