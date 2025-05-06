@@ -33,6 +33,8 @@ Example configuration for MCP server integration:
 
 ( logging is optional, no logging if LOG_FILE_PATH is not set )
 
+- json with docker
+
 ```json
 {
     "mcpServers": { 
@@ -55,6 +57,27 @@ Example configuration for MCP server integration:
       }
     }
   }
+```
+
+
+- json with docker
+
+```json
+{
+    "mcpServers": {
+        "try-cce": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@tehilathestudent/mcp-server-huawei-cce"
+            ],
+            "env": {
+                "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>",
+                "LOG_FILE_PATH": ""
+            }
+        }
+    }
+}
 ```
 
 ## example prompt

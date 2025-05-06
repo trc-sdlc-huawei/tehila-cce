@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+        "try-cce": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@tehilathestudent/mcp-server-huawei-cce"
+            ],
+            "env": {
+                "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>",
+                "LOG_FILE_PATH": ""
+            }
+        }
+    }
+}
