@@ -21,6 +21,7 @@
   - **create_pod**: Create a new pod and namespace.
   - **read_pod**: Get information about a specific pod.
   - **delete_pod**: Delete an existing pod.
+  - **delete_all_pods_in_namespace**: Delete all pods in a namespace.
 
 
 
