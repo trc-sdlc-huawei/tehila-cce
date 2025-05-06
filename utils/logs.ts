@@ -1,11 +1,12 @@
 import fs from 'fs';
-import path from 'path';
 
-const LOG_FILE = 'C:\\Users\\user1\\work\\git-repo\\try-cce-gitlab\\logs.log';
+const LOG_FILE_PATH = process.env.LOG_FILE_PATH;
+const SHOULD_LOG = !!LOG_FILE_PATH;
 
 function writeLog(message: string) {
+  if (!SHOULD_LOG) return;
   const timestamp = new Date().toISOString();
-  fs.appendFileSync(LOG_FILE, `[${timestamp}] ${message}\n`);
+  fs.appendFileSync(LOG_FILE_PATH!, `[${timestamp}] ${message}\n`);
 }
 
 export function logHttpRequest(

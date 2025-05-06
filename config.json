@@ -8,10 +8,13 @@
           "-i",
           "-e",
           "HUAWEI_CCE_AUTH_TOKEN",
+          "-e",
+          "LOG_FILE_PATH",
           "tehilathestudent/try-cce"
         ],
         "env": {
-          "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>"
+          "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>",
+          "LOG_FILE_PATH": "" 
         }
       }
     }

@@ -31,6 +31,8 @@ To use the Huawei Cloud tools, you must provide your Huawei Cloud CCE API authen
 
 Example configuration for MCP server integration:
 
+( logging is optional, no logging if LOG_FILE_PATH is not set )
+
 ```json
 {
     "mcpServers": { 
@@ -42,10 +44,13 @@ Example configuration for MCP server integration:
           "-i",
           "-e",
           "HUAWEI_CCE_AUTH_TOKEN",
+          "-e",
+          "LOG_FILE_PATH",
           "tehilathestudent/try-cce"
         ],
         "env": {
-          "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>"
+          "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>",
+          "LOG_FILE_PATH": ""
         }
       }
     }
