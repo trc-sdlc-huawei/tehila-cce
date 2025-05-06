@@ -9,7 +9,6 @@ export async function HuaweiGetClusterById(
   region: string,
   project_id: string,
   cluster_id: string,
-  opts: { pretty?: string } = {}
 ): Promise<HuaweiGetClusterByIdResponse> {
   logInfo(`HuaweiGetClusterById called with region=${region}, project_id=${project_id}, cluster_id=${cluster_id}`);
   if (!HUAWEI_CCE_AUTH_TOKEN) {
@@ -17,9 +16,6 @@ export async function HuaweiGetClusterById(
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
   let url = `https://cce.${region}.myhuaweicloud.com/api/v3/projects/${project_id}/clusters/${cluster_id}`;
-  if (opts.pretty) {
-    url += `?pretty=${encodeURIComponent(opts.pretty)}`;
-  }
   logHttpRequest('GET', url, { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
   try {
     const response = await fetch(url, {

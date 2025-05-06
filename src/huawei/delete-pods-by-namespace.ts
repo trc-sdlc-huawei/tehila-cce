@@ -1,12 +1,12 @@
 import { HUAWEI_CCE_AUTH_TOKEN } from './constants.js';
 import { logInfo, logError, logHttpRequest, logHttpResponse } from '../../utils/logs.js';
-import { HuaweiPodListSchema, type HuaweiPodList } from './list-pods-by-namespace.js';
+import { HuaweiListPodsResponseSchema, type HuaweiListPodsResponse } from '../../schemas/huawei/index.js';
 
 export async function HuaweiDeletePodsByNamespace(
   region: string,
   cluster_id: string,
   namespace: string
-): Promise<HuaweiPodList> {
+): Promise<HuaweiListPodsResponse> {
   logInfo(`HuaweiDeletePodsByNamespace called with region=${region}, cluster_id=${cluster_id}, namespace=${namespace}`);
   if (!HUAWEI_CCE_AUTH_TOKEN) {
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
@@ -30,7 +30,7 @@ export async function HuaweiDeletePodsByNamespace(
       throw new Error(`Huawei CCE API error: ${response.statusText}`);
     }
     logInfo('HuaweiDeletePodsByNamespace succeeded');
-    return HuaweiPodListSchema.parse(respBody);
+    return HuaweiListPodsResponseSchema.parse(respBody);
   } catch (error) {
     logError(`HuaweiDeletePodsByNamespace error: ${error}`);
     throw error;

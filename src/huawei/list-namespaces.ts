@@ -5,7 +5,6 @@ import { HuaweiListNamespacesResponse, HuaweiListNamespacesResponseSchema } from
 export async function HuaweiListNamespaces(
   region: string,
   cluster_id: string,
-  opts: { pretty?: string } = {}
 ): Promise<HuaweiListNamespacesResponse> {
   logInfo(`HuaweiListNamespaces called with region=${region}, cluster_id=${cluster_id}`);
   if (!HUAWEI_CCE_AUTH_TOKEN) {
@@ -13,9 +12,6 @@ export async function HuaweiListNamespaces(
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
   let url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces`;
-  if (opts.pretty) {
-    url += `?pretty=${encodeURIComponent(opts.pretty)}`;
-  }
   logHttpRequest('GET', url, { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
   try {
     const response = await fetch(url, {

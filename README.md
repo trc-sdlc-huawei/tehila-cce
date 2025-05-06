@@ -28,7 +28,6 @@
 To use the Huawei Cloud tools, you must provide your Huawei Cloud CCE API authentication token as an environment variable:
 
 - `HUAWEI_CCE_AUTH_TOKEN`: Your Huawei Cloud CCE API authentication token (required)
-- `GITLAB_PERSONAL_ACCESS_TOKEN`: Your GitLab personal access token (required)
 
 Example configuration for MCP server integration:
 
@@ -42,13 +41,10 @@ Example configuration for MCP server integration:
           "--rm",
           "-i",
           "-e",
-          "GITLAB_PERSONAL_ACCESS_TOKEN",
-          "-e",
           "HUAWEI_CCE_AUTH_TOKEN",
-          "tehilathestudent/try-cce-gitlab"
+          "tehilathestudent/try-cce"
         ],
         "env": {
-          "GITLAB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN>",
           "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>"
         }
       }

@@ -25,7 +25,6 @@ export const HuaweiListPodsResponseSchema = z.object({
 });
 export type HuaweiListPodsResponse = z.infer<typeof HuaweiListPodsResponseSchema>;
 
-
 // namespace
 export const HuaweiListNamespacesResponseSchema = z.object({
   kind: z.literal('NamespaceList'),

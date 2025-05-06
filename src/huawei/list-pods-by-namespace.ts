@@ -1,24 +1,15 @@
 import { HUAWEI_CCE_AUTH_TOKEN } from './constants.js';
 import { logInfo, logError, logHttpRequest, logHttpResponse } from '../../utils/logs.js';
 import { z } from 'zod';
+import { HuaweiListPodsResponseSchema, type HuaweiListPodsResponse } from '../../schemas/huawei/index.js';
 
-// Schema for a single pod (reuse existing if available)
-import { HuaweiPodSchema } from '../../schemas/huawei/entities/pod.js';
 
-// Schema for pod list response
-export const HuaweiPodListSchema = z.object({
-  kind: z.literal('PodList'),
-  apiVersion: z.string(),
-  metadata: z.any(),
-  items: z.array(HuaweiPodSchema),
-});
-export type HuaweiPodList = z.infer<typeof HuaweiPodListSchema>;
 
 export async function HuaweiListPodsByNamespace(
   region: string,
   cluster_id: string,
   namespace: string
-): Promise<HuaweiPodList> {
+): Promise<HuaweiListPodsResponse> {
   logInfo(`HuaweiListPodsByNamespace called with region=${region}, cluster_id=${cluster_id}, namespace=${namespace}`);
   if (!HUAWEI_CCE_AUTH_TOKEN) {
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
@@ -42,7 +33,7 @@ export async function HuaweiListPodsByNamespace(
       throw new Error(`Huawei CCE API error: ${response.statusText}`);
     }
     logInfo('HuaweiListPodsByNamespace succeeded');
-    return HuaweiPodListSchema.parse(respBody);
+    return HuaweiListPodsResponseSchema.parse(respBody);
   } catch (error) {
     logError(`HuaweiListPodsByNamespace error: ${error}`);
     throw error;

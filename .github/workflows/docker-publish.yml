@@ -30,4 +30,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/try-cce-gitlab:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/try-cce:latest

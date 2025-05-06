@@ -171,39 +171,35 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           kind: "Namespace",
           metadata: {
             name: args.name,
-            labels: args.labels,
-            annotations: args.annotations
           }
         };
-        const { region, cluster_id, ...opts } = args;
-        delete opts.labels;
-        delete opts.annotations;
-        const result = await HuaweiCreateNamespace(region, cluster_id, body, opts);
+        const { region, cluster_id } = args;
+        const result = await HuaweiCreateNamespace(region, cluster_id, body);
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
       }
       case "delete_namespace": {
         const args = HuaweiDeleteNamespaceParamsSchema.parse(request.params.arguments);
-        const { region, cluster_id, name, ...opts } = args;
-        const result = await HuaweiDeleteNamespace(region, cluster_id, name, opts);
+        const { region, cluster_id, name } = args;
+        const result = await HuaweiDeleteNamespace(region, cluster_id, name);
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
       }
 
       // Pod tools
       case "list_pods": {
         const args = HuaweiListPodsParamsSchema.parse(request.params.arguments);
-        const { region, cluster_id, ...opts } = args;
-        const pods = await HuaweiListPods(region, cluster_id, opts);
+        const { region, cluster_id } = args;
+        const pods = await HuaweiListPods(region, cluster_id);
         return { content: [{ type: "text", text: JSON.stringify(pods, null, 2) }] };
       }
       case "create_pod": {
         const args = HuaweiCreatePodParamsSchema.parse(request.params.arguments);
-        const { region, cluster_id, namespace, pod_name, container_name, image, ...opts } = args;
-        const result = await HuaweiCreatePod(region, cluster_id, namespace, pod_name, container_name, image, opts);
+        const { region, cluster_id, namespace, pod_name, container_name, image } = args;
+        const result = await HuaweiCreatePod(region, cluster_id, namespace, pod_name, container_name, image);
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
       }
       case "get_pod_by_name_and_namespace": {
         const args = HuaweiReadPodParamsSchema.parse(request.params.arguments);
-        const pod = await HuaweiReadPod(args.region, args.cluster_id, args.namespace, args.pod_name, { pretty: args.pretty });
+        const pod = await HuaweiReadPod(args.region, args.cluster_id, args.namespace, args.pod_name);
         return { content: [{ type: "text", text: JSON.stringify(pod, null, 2) }] };
       }
       case "list_pods_by_namespace": {

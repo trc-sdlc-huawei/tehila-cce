@@ -7,13 +7,10 @@
           "--rm",
           "-i",
           "-e",
-          "GITLAB_PERSONAL_ACCESS_TOKEN",
-          "-e",
           "HUAWEI_CCE_AUTH_TOKEN",
-          "tehilathestudent/try-cce-gitlab"
+          "tehilathestudent/try-cce"
         ],
         "env": {
-          "GITLAB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN>",
           "HUAWEI_CCE_AUTH_TOKEN": "<your huawei token>"
         }
       }

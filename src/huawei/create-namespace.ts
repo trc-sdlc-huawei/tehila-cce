@@ -6,26 +6,15 @@ export async function HuaweiCreateNamespace(
   region: string,
   cluster_id: string,
   body: any,
-  opts: {
-    dryRun?: string,
-    fieldManager?: string,
-    fieldValidation?: string,
-    pretty?: string,
-  } = {}
 ): Promise<HuaweiNamespace> {
-  logInfo(`HuaweiCreateNamespace called with region=${region}, cluster_id=${cluster_id}, opts=${JSON.stringify(opts)}, body=${JSON.stringify(body)}`);
+  logInfo(`HuaweiCreateNamespace called with region=${region}, cluster_id=${cluster_id}, body=${JSON.stringify(body)}`);
   if (!HUAWEI_CCE_AUTH_TOKEN) {
     logError('HUAWEI_CCE_AUTH_TOKEN is missing');
     throw new Error('HUAWEI_CCE_AUTH_TOKEN is missing');
   }
   let url = `https://${cluster_id}.cce.${region}.myhuaweicloud.com/api/v1/namespaces`;
-  if (opts.pretty) {
-    url += `?pretty=${encodeURIComponent(opts.pretty)}`;
-  }
+
   const urlObject = new URL(url);
-  Object.entries(opts).forEach(([key, value]) => {
-    if (value !== undefined && key !== 'pretty') urlObject.searchParams.append(key, String(value));
-  });
   logHttpRequest('POST', urlObject.toString(), { 'x-auth-token': HUAWEI_CCE_AUTH_TOKEN });
   try {
     const response = await fetch(urlObject.toString(), {
