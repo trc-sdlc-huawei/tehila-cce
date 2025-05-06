@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 export const HuaweiPodSchema = z.object({
-  kind: z.literal('Pod'),
-  apiVersion: z.string(),
+  kind: z.literal('Pod').optional(),
+  apiVersion: z.string().optional(),
   metadata: z.any(),
   spec: z.any(),
   status: z.any(),

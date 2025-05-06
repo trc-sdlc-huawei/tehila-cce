@@ -24,7 +24,7 @@ export async function HuaweiListPods(
     logHttpResponse(response.status, undefined, respBody, undefined);
     if (!response.ok) {
       logError(`Huawei CCE API error: ${response.statusText}`);
-      throw new Error(`Huawei CCE API error: ${response.statusText}`);
+      throw new Error(`Huawei CCE API error: ${response.statusText},${response.statusText}`);
     }
     logInfo('HuaweiListPods succeeded');
     return HuaweiListPodsResponseSchema.parse(respBody);

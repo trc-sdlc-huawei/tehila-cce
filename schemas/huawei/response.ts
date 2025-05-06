@@ -20,7 +20,9 @@ export type HuaweiGetClusterByIdResponse = z.infer<typeof HuaweiGetClusterByIdRe
 export const HuaweiListPodsResponseSchema = z.object({
   kind: z.literal('PodList'),
   apiVersion: z.string(),
-  metadata: z.any(),
+  metadata: z.object({
+    resourceVersion: z.string(),
+  }),
   items: z.array(HuaweiPodSchema),
 });
 export type HuaweiListPodsResponse = z.infer<typeof HuaweiListPodsResponseSchema>;
