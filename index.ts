@@ -9,21 +9,19 @@ import {
 import fetch from "node-fetch";
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+
+
+// src
 import {
-  GitLabForkSchema,
-  GitLabReferenceSchema,
-  GitLabRepositorySchema,
-  GitLabIssueSchema,
-  GitLabMergeRequestSchema,
-  GitLabContentSchema,
-  GitLabCreateUpdateFileResponseSchema,
-  GitLabSearchResponseSchema,
-  GitLabTreeSchema,
-  GitLabCommitSchema,
-  CreateRepositoryOptionsSchema,
-  CreateIssueOptionsSchema,
-  CreateMergeRequestOptionsSchema,
-  CreateBranchOptionsSchema,
+  GITLAB_PERSONAL_ACCESS_TOKEN,
+  createBranch,
+  createIssue,
+  createMergeRequest, createOrUpdateFile, createRepository, getFileContents, searchProjects,
+  forkProject, createCommit
+} from './src/gitlab/index.js';
+import { HuaweiListClusters } from './src/huawei/index.js';
+import { HUAWEI_CCE_AUTH_TOKEN } from './src/huawei/constants.js';
+import {
   CreateOrUpdateFileSchema,
   SearchRepositoriesSchema,
   CreateRepositorySchema,
@@ -33,18 +31,8 @@ import {
   CreateMergeRequestSchema,
   ForkRepositorySchema,
   CreateBranchSchema,
-  type GitLabFork,
-  type GitLabReference,
-  type GitLabRepository,
-  type GitLabIssue,
-  type GitLabMergeRequest,
-  type GitLabContent,
-  type GitLabCreateUpdateFileResponse,
-  type GitLabSearchResponse,
-  type GitLabTree,
-  type GitLabCommit,
-  type FileOperation,
-} from './schemas.js';
+  HuaweiListClustersParamsSchema
+} from './schemas/index.js';
 
 const server = new Server({
   name: "gitlab-mcp-server",
@@ -55,9 +43,8 @@ const server = new Server({
   }
 });
 
-const GITLAB_PERSONAL_ACCESS_TOKEN = process.env.GITLAB_PERSONAL_ACCESS_TOKEN;
-const GITLAB_API_URL = process.env.GITLAB_API_URL || 'https://gitlab.com/api/v4';
-const HUAWEI_CCE_AUTH_TOKEN = process.env.HUAWEI_CCE_AUTH_TOKEN;
+
+
 
 if (!GITLAB_PERSONAL_ACCESS_TOKEN) {
   console.error("GITLAB_PERSONAL_ACCESS_TOKEN environment variable is not set");
@@ -69,328 +56,12 @@ if (!HUAWEI_CCE_AUTH_TOKEN) {
   process.exit(1);
 }
 
-async function forkProject(
-  projectId: string,
-  namespace?: string
-): Promise<GitLabFork> {
-  const url = `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/fork`;
-  const queryParams = namespace ? `?namespace=${encodeURIComponent(namespace)}` : '';
 
-  const response = await fetch(url + queryParams, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-      "Content-Type": "application/json"
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabForkSchema.parse(await response.json());
-}
-
-async function createBranch(
-  projectId: string,
-  options: z.infer<typeof CreateBranchOptionsSchema>
-): Promise<GitLabReference> {
-  const response = await fetch(
-    `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/repository/branches`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        branch: options.name,
-        ref: options.ref
-      })
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabReferenceSchema.parse(await response.json());
-}
-
-async function getFileContents(
-  projectId: string,
-  filePath: string,
-  ref?: string
-): Promise<GitLabContent> {
-  const encodedPath = encodeURIComponent(filePath);
-  let url = `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/repository/files/${encodedPath}`;
-  if (ref) {
-    url += `?ref=${encodeURIComponent(ref)}`;
-  } else {
-    url += '?ref=HEAD';
-  }
-
-  const response = await fetch(url, {
-    headers: {
-      "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  const data = GitLabContentSchema.parse(await response.json());
-  
-  if (!Array.isArray(data) && data.content) {
-    data.content = Buffer.from(data.content, 'base64').toString('utf8');
-  }
-
-  return data;
-}
-
-async function createIssue(
-  projectId: string,
-  options: z.infer<typeof CreateIssueOptionsSchema>
-): Promise<GitLabIssue> {
-  const response = await fetch(
-    `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/issues`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: options.title,
-        description: options.description,
-        assignee_ids: options.assignee_ids,
-        milestone_id: options.milestone_id,
-        labels: options.labels?.join(',')
-      })
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabIssueSchema.parse(await response.json());
-}
-
-async function createMergeRequest(
-  projectId: string,
-  options: z.infer<typeof CreateMergeRequestOptionsSchema>
-): Promise<GitLabMergeRequest> {
-  const response = await fetch(
-    `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/merge_requests`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: options.title,
-        description: options.description,
-        source_branch: options.source_branch,
-        target_branch: options.target_branch,
-        allow_collaboration: options.allow_collaboration,
-        draft: options.draft
-      })
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabMergeRequestSchema.parse(await response.json());
-}
-
-async function createOrUpdateFile(
-  projectId: string,
-  filePath: string,
-  content: string,
-  commitMessage: string,
-  branch: string,
-  previousPath?: string
-): Promise<GitLabCreateUpdateFileResponse> {
-  const encodedPath = encodeURIComponent(filePath);
-  const url = `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/repository/files/${encodedPath}`;
-
-  const body = {
-    branch,
-    content,
-    commit_message: commitMessage,
-    ...(previousPath ? { previous_path: previousPath } : {})
-  };
-
-  // Check if file exists
-  let method = "POST";
-  try {
-    await getFileContents(projectId, filePath, branch);
-    method = "PUT";
-  } catch (error) {
-    // File doesn't exist, use POST
-  }
-
-  const response = await fetch(url, {
-    method,
-    headers: {
-      "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(body)
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabCreateUpdateFileResponseSchema.parse(await response.json());
-}
-
-async function createTree(
-  projectId: string,
-  files: FileOperation[],
-  ref?: string
-): Promise<GitLabTree> {
-  const response = await fetch(
-    `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/repository/tree`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        files: files.map(file => ({
-          file_path: file.path,
-          content: file.content
-        })),
-        ...(ref ? { ref } : {})
-      })
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabTreeSchema.parse(await response.json());
-}
-
-async function createCommit(
-  projectId: string,
-  message: string,
-  branch: string,
-  actions: FileOperation[]
-): Promise<GitLabCommit> {
-  const response = await fetch(
-    `${GITLAB_API_URL}/projects/${encodeURIComponent(projectId)}/repository/commits`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        branch,
-        commit_message: message,
-        actions: actions.map(action => ({
-          action: "create",
-          file_path: action.path,
-          content: action.content
-        }))
-      })
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabCommitSchema.parse(await response.json());
-}
-
-async function searchProjects(
-  query: string,
-  page: number = 1,
-  perPage: number = 20
-): Promise<GitLabSearchResponse> {
-  const url = new URL(`${GITLAB_API_URL}/projects`);
-  url.searchParams.append("search", query);
-  url.searchParams.append("page", page.toString());
-  url.searchParams.append("per_page", perPage.toString());
-
-  const response = await fetch(url.toString(), {
-    headers: {
-      "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  const projects = await response.json();
-  return GitLabSearchResponseSchema.parse({
-    count: parseInt(response.headers.get("X-Total") || "0"),
-    items: projects
-  });
-}
-
-async function createRepository(
-  options: z.infer<typeof CreateRepositoryOptionsSchema>
-): Promise<GitLabRepository> {
-  const response = await fetch(`${GITLAB_API_URL}/projects`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${GITLAB_PERSONAL_ACCESS_TOKEN}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: options.name,
-      description: options.description,
-      visibility: options.visibility,
-      initialize_with_readme: options.initialize_with_readme
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitLab API error: ${response.statusText}`);
-  }
-
-  return GitLabRepositorySchema.parse(await response.json());
-}
-
-export const ListCceClustersSchema = z.object({
-  region: z.string().describe("Huawei Cloud region"),
-  project_id: z.string().describe("Huawei Cloud project ID")
-});
-
-type ListCceClustersOptions = z.infer<typeof ListCceClustersSchema>;
-
-async function listCceClusters(options: ListCceClustersOptions): Promise<any> {
-  const url = `https://${options.region}.cce.huaweicloud.com/v3/projects/${options.project_id}/clusters`;
-  const response = await fetch(url, {
-    headers: {
-      "Authorization": `Bearer ${HUAWEI_CCE_AUTH_TOKEN}`,
-      "Content-Type": "application/json"
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`Huawei CCE API error: ${response.statusText}`);
-  }
-
-  return await response.json();
-}
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
+      //  gitlab
       {
         name: "create_or_update_file",
         description: "Create or update a single file in a GitLab project",
@@ -436,11 +107,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         description: "Create a new branch in a GitLab project",
         inputSchema: zodToJsonSchema(CreateBranchSchema)
       },
+      // huawei
       {
-        name: "list_cce_clusters",
-        description: "List Huawei Cloud CCE clusters",
-        inputSchema: zodToJsonSchema(ListCceClustersSchema)
-      }
+        name: "list_clusters",
+        description: "List all clusters in a Huawei CCE project",
+        inputSchema: zodToJsonSchema(HuaweiListClustersParamsSchema)
+      },
     ]
   };
 });
@@ -452,6 +124,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     switch (request.params.name) {
+      // gitlab
       case "fork_repository": {
         const args = ForkRepositorySchema.parse(request.params.arguments);
         const fork = await forkProject(args.project_id, args.namespace);
@@ -528,9 +201,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const mergeRequest = await createMergeRequest(project_id, options);
         return { content: [{ type: "text", text: JSON.stringify(mergeRequest, null, 2) }] };
       }
-      case "list_cce_clusters": {
-        const args = ListCceClustersSchema.parse(request.params.arguments);
-        const clusters = await listCceClusters(args);
+
+      // huawei
+      case "list_clusters": {
+        const args = HuaweiListClustersParamsSchema.parse(request.params.arguments);
+        const clusters = await HuaweiListClusters(args.region, args.project_id);
         return { content: [{ type: "text", text: JSON.stringify(clusters, null, 2) }] };
       }
 

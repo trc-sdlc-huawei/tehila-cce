@@ -1,0 +1,63 @@
+import fs from 'fs';
+import path from 'path';
+
+const LOG_FILE = 'C:\\Users\\user1\\work\\git-repo\\try-cce-gitlab\\logs.log';
+
+function writeLog(message: string) {
+  const timestamp = new Date().toISOString();
+  fs.appendFileSync(LOG_FILE, `[${timestamp}] ${message}\n`);
+}
+
+export function logHttpRequest(
+  method: string,
+  url: string,
+  headers?: Record<string, string>,
+  body?: any,
+  queryParams?: Record<string, any>
+) {
+  writeLog(`[HTTP REQUEST] ${method} ${url}`);
+  if (headers) {
+    writeLog(`  Headers: ${JSON.stringify(headers, null, 2)}`);
+  }
+  if (queryParams) {
+    writeLog(`  Query Params: ${JSON.stringify(queryParams, null, 2)}`);
+  }
+  if (body) {
+    writeLog(`  Body: ${JSON.stringify(body, null, 2)}`);
+  }
+}
+
+export function logHttpResponse(
+  status: number,
+  headers?: Record<string, string>,
+  body?: any,
+  duration?: number
+) {
+  const statusText = status < 400 ? 'SUCCESS' : 'ERROR';
+  writeLog(`[HTTP RESPONSE] Status: ${status} (${statusText})`);
+  if (duration) {
+    writeLog(`  Duration: ${duration}ms`);
+  }
+  if (headers) {
+    writeLog(`  Headers: ${JSON.stringify(headers, null, 2)}`);
+  }
+  if (body) {
+    writeLog(`  Body: ${JSON.stringify(body, null, 2)}`);
+  }
+}
+
+export function logMcpUsage({ tool, args, result, error }: { tool: string, args: any, result?: any, error?: any }) {
+  if (error) {
+    writeLog(`[MCP ERROR] Tool: ${tool} | Args: ${JSON.stringify(args)} | Error: ${error}`);
+  } else {
+    writeLog(`[MCP USAGE] Tool: ${tool} | Args: ${JSON.stringify(args)} | Result: ${result ? JSON.stringify(result).slice(0, 300) : ''}`);
+  }
+}
+
+export function logInfo(message: string) {
+  writeLog(`[INFO] ${message}`);
+}
+
+export function logError(message: string) {
+  writeLog(`[ERROR] ${message}`);
+}

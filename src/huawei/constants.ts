@@ -1,0 +1,1 @@
+export const HUAWEI_CCE_AUTH_TOKEN = process.env.HUAWEI_CCE_AUTH_TOKEN;
