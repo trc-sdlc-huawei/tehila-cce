@@ -1,6 +1,6 @@
 {
   "name": "@tehilathestudent/mcp-server-huawei-cce",
-  "version": "0.6.2",
+  "version": "0.0.1",
   "description": "MCP server for using Huawei Cloud CCE API",
   "type": "module",
   "bin": {

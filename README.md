@@ -60,7 +60,7 @@ Example configuration for MCP server integration:
 ```
 
 
-- json with docker
+- json with node
 
 ```json
 {
