@@ -1,5 +1,4 @@
 export * from './list-clusters.js';
-export * from './constants.js';
 export * from './get-cluster-by-id.js';
 export * from './list-namespaces.js';
 export * from './delete-namespace.js';

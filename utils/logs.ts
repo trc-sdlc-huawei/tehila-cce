@@ -1,6 +1,7 @@
 import fs from 'fs';
 
-const LOG_FILE_PATH = process.env.LOG_FILE_PATH;
+// const LOG_FILE_PATH = process.env.LOG_FILE_PATH;
+const LOG_FILE_PATH ="C:\\Users\\user1\\work\\git-repo\\try-cce-gitlab\\logs.log";
 const SHOULD_LOG = !!LOG_FILE_PATH;
 
 function writeLog(message: string) {
