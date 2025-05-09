@@ -1,22 +1,29 @@
 {
     "mcpServers": {
-      "everything": {
-        "command": "npx",
-        "args": ["@modelcontextprotocol/server-everything"],
-        "env": {
-          "hello": "Hello MCP!"
+        "everything": {
+            "command": "npx",
+            "args": [
+                "@modelcontextprotocol/server-everything"
+            ],
+            "env": {
+                "hello": "Hello MCP!"
+            }
+        },
+        "huawei-cce": {
+            "command": "node",
+            "args": [
+                "/home/user1/work/git-repo/try-cce-gitlab/dist/index.js"
+            ],
+            "env": {
+                "HUAWEI_CCE_AUTH_TOKEN": "your huawei token",
+                "LOG_FILE_PATH": "/home/user1/work/git-repo/try-cce-gitlab/log.txt"
+            }
+        },
+        "weather-server": {
+            "command": "python3",
+            "args": [
+                "/home/user1/work/git-repo/quickstart-resources/weather-server-python/weather.py"
+            ]
         }
-      },
-      "huawei-cce": {
-        "command": "node",
-        "args": ["/home/user1/work/git-repo/try-cce-gitlab/dist/index.js"],
-        "env": {
-          "HUAWEI_CCE_AUTH_TOKEN": "your huawei token",
-          "LOG_FILE_PATH": "/home/user1/work/git-repo/try-cce-gitlab/log.txt"
-        }
-      },"weather-server": {
-        "command": "python3",
-        "args": ["/home/user1/work/git-repo/quickstart-resources/weather-server-python/weather.py"]
-      }
     }
-  }
+}
