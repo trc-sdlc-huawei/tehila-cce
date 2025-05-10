@@ -52,11 +52,15 @@ const server = new Server({
     tools: {}
   }
 });
-
-
-
+logInfo("Huawei CCE MCP Server running on stdio");
+logInfo(process.pid.toString());
+import dotenv from 'dotenv';
+import { logInfo } from "./utils/logs.js";
+logInfo(process.cwd());
+// dotenv.config();
+logInfo(process.env.HUAWEI_CCE_AUTH_TOKEN?.toString() || "HUAWEI_CCE_AUTH_TOKEN environment variable is not set");
 if (!HUAWEI_CCE_AUTH_TOKEN) {
-  console.error("HUAWEI_CCE_AUTH_TOKEN environment variable is not set");
+  console.error("HUAWEI_CCE_AUTH_TOKEN environment ssssssss variable is not set");
   process.exit(1);
 }
 
@@ -234,6 +238,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function runServer() {
+  logInfo("Huawei CCE MCP Server running on stdio");
+  dotenv.config();
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("Huawei CCE MCP Server running on stdio");
